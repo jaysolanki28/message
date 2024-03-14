@@ -1,0 +1,414 @@
+This code has the functionality to convert text to PDF and download the file with the help of heroku.
+I want you to study this code, and take this code as a reference and create a new code for me.
+Actually I want two HTML pages to be created!  One to post the message, and one to display all messages in an HTML paragraph.
+Take inspiration from the given demo code, take help from heroku, and write JavaScript Ajax code to implement this functionality.
+
+Demo code:
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<meta name="HandheldFriendly" content="true">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=no">
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.69/pdfmake.min.js" integrity="sha512-3O/98mQR8VAbnoxtu0U5RFMeKwxzBXFzLtbGUVdvvnRYvXI7iQ64BrtatgIdsz4jHzs/MypLonFGfOdC0W5xHQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.69/vfs_fonts.min.js" integrity="sha512-VIF8OqBWob/wmCvrcQs27IrQWwgr3g+iA4QQ4hH/YeuYBIoAUluiwr/NX5WQAQgUaVx39hs6l05cEOIGEB+dmA==" crossorigin="anonymous"></script>
+
+<style type="text/css">
+html, body {
+padding: 0; margin: 0; width: 100vw; height: 100vh; font-family: Arial;    background-color: #262e4a;}
+
+*, *::before, *::after {
+  box-sizing: border-box;}
+#inter {
+float: left;margin-left: 24vw; position: fixed;     top: 35%;    border-radius: 10px; background-color: red;	border: 4px dotted blue; width: 50vw;height: auto; text-align: center; color: #fff;font-size: 7px; }
+#inter>li {
+font-size: 10px; }
+.images-container{
+width: 100vw; }
+.image-container{
+float: left; margin-left: 5vw; width: 90vw; margin-bottom: 5px; }
+.image-delete-button{
+border: none; background-color: #262e4a; font-size: 0px; float: right; }
+img {
+height: 8vh;width: 12vw; font-size: 0px; float: left; 5vw; }
+.fa {
+border: none;font-size: 30px; color: red; }
+.fa-upload {
+float: left; margin-left: 60vw; border: none;font-size: 15px; color: #ffff00; }
+
+
+
+#ldm {
+display: block; position: fixed;     top: 40%;    float: left;margin-left: 20vw; height: auto; width: 60vw; }
+.loader {
+margin-bottom: 25px;   border: 12px solid #fff;  border-radius: 50%;  border-top: 12px solid #3498db;  width: 120px;  height: 120px;  -webkit-animation: spin 2s linear infinite; /* Safari */  animation: spin 2s linear infinite;}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }  100% { -webkit-transform: rotate(320deg); }}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }  100% { transform: rotate(320deg); }}
+input[type=text], textarea {
+margin-top: 5px; margin-bottom: 5px; float: left; margin-left: 5vw;  font-size: 10px; text-align: left; background-color: #000; color: #fff;height: 4vh;    width: 90vw;    padding: 12px;    border: 2px solid #fff;    border-radius: 5px;    box-sizing: border-box;    resize: vertical;}
+textarea {
+height: 12vh; }
+.upload-file {
+float: left; margin-left: 5vw; margin-top: 5px; margin-bottom: 10px; width: 90vw;height: auto;	border: 2px solid #fff;	font-size: 13px;	background-color: #000;color: #fff; padding: 12px;  display: flex;  justify-content: left;    align-items: left; }
+.error{
+color: #ffff00; }
+.blink {
+animation: blinker 3s linear infinite; color: #ffff00; font-size: 9px; font-weight: bold; }
+@keyframes blinker {
+50% { opacity: 0; } }
+span, label {
+float: left; margin-left: 5vw; }
+label {
+color: #fff; font-size: 10px; }
+input[type="file"] {
+    position: fixed;    right: 100%;    bottom: 100%;}
+.hidden {
+display: none; }
+.show{
+display: block; }
+.input-container {
+ width: 100vw; }
+#first-input {
+height: 9vh; }
+#second-input {
+height: 17vh; }
+
+.form-container {
+position: fixed;     margin-top: 2vh; }
+.submit-button-div {
+    position: fixed;     bottom: 7%; }
+.submit-button {
+
+height: 5.5vh;width: 70vw; font-size:16px;color: #fff;background-color: #008000;border:3px solid #fff;border-radius: 20px; }
+.form {
+margin-top: 18px; }
+  .no-copy { 
+      -webkit-user-select: none;       -webkit-touch-callout: none;       -moz-user-select: none;       -ms-user-select: none;       user-select: none; } 
+#alt {
+    height: 40px;     position: fixed;     bottom:5%;    width:100%;     opacity: 1;color: #fff;	font-size: 10px;text-align: center;}
+</style>
+<title>PDF creater</title>
+</head>
+
+<body class="no-copy">
+
+
+
+
+
+
+<div class="container2 box" id="inter">
+<p aria-live="assertive">You los internet connection!</p>
+<b>Pleas Try:</b>
+<ul>
+<li>Turning on mobile data or WiFi.</li>
+
+<li>Checking the signal in your area.</li>
+
+<li>Turning off airplane mode.</li>
+<li>Turning off power saving mode.</li>
+</ul>
+
+
+
+ </div>
+<div id="page">
+<div class="show form-container" id="form-container" align = "center">
+<b aria-live="polite">Create PDFs!</b>
+<form class="form" action="" method="post" name="form">
+<div class="show input-container" id="first-input">
+    <label for="file-name">Enter file's name: *</label>
+    <input type="text" id="file-name" class="form-input" name="file_name" title="enter a name, with witch you want to download your PDF file." />
+<span aria-live="polite"></span>
+</div>
+<div class="show input-container" id="second-input">
+    <label for="text-input">Enter text: *</label>
+
+<textarea id="text-input" class="form-input" name="user_text" rows="4" cols="5"></textarea>
+<span aria-live="polite"></span>
+</div>
+<div class="show input-container" id="last-input">
+<label class="file-upload-label">Or select photos: * </label>
+    <label class="upload-file" aria-hidden="true" for="gfl">Chues photo <i class="fa fa-upload"></i></label>
+<input type="file" id="gfl" except="imege/*"/>
+<span aria-live="polite"></span>
+</div>
+<div id="images-container"></div>
+<div class="show input-container submit-button-div">
+          <input type="submit" class="submit-button" value="Create and download PDF"/>
+
+
+</div>
+</form>
+  </div>
+</div>
+<div id="ldm" align = "center">
+<div id="loading-div" aria-hidden="true"></div>
+<b id="info" aria-live="polite"></b>
+</div>
+<div class="box" id="alt" aria-live="assertive" style ="display:none" align = "center">
+<p id="cpy"></p>
+</div>
+<script>
+'use strict';
+const input_elements= document.getElementsByClassName("form-input");
+const file_name_input = document.getElementById("file-name");
+const file_input = document.getElementById("gfl");
+const images_container = document.getElementById("images-container");
+const text_input = document.getElementById("text-input");
+const loading_div = document.getElementById("loading-div");
+const uploadEndPoint = "https://bthfiledownloader.herokuapp.com/upload?";
+const downloadEndPoint = "https://bthfiledownloader.herokuapp.com/download?";
+const appInfo ="Blind tech Hindi android app (https://play.google.com/store/apps/details?id=blind.tech.hindi)";
+const fileNamePriFix = " from Blind tech hindi";
+const photoExtensions = ["png","jpg"];
+let photos =[];
+const imageHeight = 900;
+const imageWidth = 500;
+const color ="#000000";
+const background ="#FFFFFF";
+const fontSize = 15;
+let userName = localStorage.getItem("btname");
+if(userName===null){
+userName = "Unknown";
+}
+document.form.addEventListener("submit", validateForm);
+for(let i=0;i<input_elements.length;i++){
+const input_element = input_elements[i];
+let event = input_element.tagName==="input"?"input":"change";
+input_element.addEventListener(event, removeError);
+}
+file_input.addEventListener("change", showFile);
+function validateForm(event) {
+event.preventDefault();
+if(isInLength(file_name_input.value, 2, 75)) {
+return showError(file_name_input, "Please, enter valid filename.");
+}
+if((isAmty(text_input.value))&&(isAmty(file_input.value))){
+return showError(text_input, "Please, enter text or choose images.");
+}
+if((!isAmty(file_input.value))&&(!isFileType(file_input.files[0], photoExtensions))){
+const errorMsg ="Please, choose valid file. Only allowed formats are "+photoExtensions.join(",");
+return showError(file_input, errorMsg);
+}
+document.getElementById("info").innerText="Creating file, please wait...";
+loading_div.classList.add('loader');
+sh("form-container", "none");
+sh("ldm", "block");
+textToPdf(file_name_input.value, text_input.value);
+}
+
+
+
+
+
+function textToPdf(fileName, text) {
+fileName = fileName.replace(".pdf", "");
+fileName = fileName.replace(".PDF", "");
+fileName= fileName+fileNamePriFix+".pdf";
+const docContent = [];
+if(text.length>0){
+docContent.push({text:text, fontSize:fontSize, color:color, background:background});
+}
+if(photos.length>0){
+docContent.push(photos);
+}
+const docDefinition = {
+  info: {
+title: fileName.replace(".pdf", ""),
+author: userName,
+creator:appInfo,
+producer:appInfo
+  },
+  content:  docContent
+}
+
+
+const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+pdfDocGenerator.getBlob(async function(data) {
+let formData = new FormData();
+formData.append('user_file', data, fileName);
+    let response = await fetch(uploadEndPoint, {
+      method: 'POST',
+      body: formData
+    });
+const fileInfo = await response.json();
+setTimeout(function() {
+const url = downloadEndPoint+'name='+fileInfo.fileName+'&uniquename='+fileInfo.uniqueName+'&type=application/pdf&format=pdf';
+//alt("Starting download. Please, se notification panel for download progress.", 6000);
+setTimeout(shoForm, 3000);
+window.location.href=url;
+}, 10000);
+});
+}
+
+function shoForm() {
+document.getElementById("info").innerText="";
+text_input.value="";
+file_name_input.value="";
+removeError.call(file_name_input);
+removeError.call(text_input);
+removeError.call(file_input);
+images_container.innerHTML="";
+file_input.value="";
+photos = [];
+loading_div.classList.remove('loader');
+sh("form-container", "block");
+sh("ldm", "none");
+}
+function isFileType(file, fileExtensions) {
+
+const fileExtension = getFileExtension(file);
+for(let f=0;f<fileExtensions.length;f++){
+if(fileExtension===fileExtensions[f]){
+return true;
+}
+}
+return false;
+}
+function getFileExtension(f) {
+           const e1 = f.name.lastIndexOf(".") + 1;
+return f.name.substr(e1, f.name.length).toLowerCase();
+}
+function showFile(e) {
+const file = this.files[0];
+if(isFileType(file, photoExtensions)) {
+removeError.call(this);
+    const reader  = new FileReader();
+    reader.onload = function(event)  {
+photos.push({image:event.target.result, height:imageHeight, width:imageWidth});
+const image_container = document.createElement("div");
+image_container.classList.add("image-container");
+const image_element = document.createElement("img");
+image_element.alt=file.name;
+        image_element.src = event.target.result;
+image_element.classList.add("image-colum");
+image_container.appendChild(image_element);
+const image_delete_button = document.createElement("button");
+image_delete_button.classList.add("image-delete-button", "image-colum");
+image_delete_button.setAttribute("data-image", event.target.result);
+image_delete_button.innerHTML="Remove "+file.name+" from PDF <i class='fa fa-trash'></i>";
+image_delete_button.addEventListener("click", removeFile);
+image_container.appendChild(image_delete_button);
+images_container.appendChild(image_container);
+const saved = "Image: "+file.name+" has added! If you want to add more images please, click on choose image button.";
+alt( saved);
+     }
+     reader.readAsDataURL(file);
+} else{
+const errorMsg ="Invalid file. Only allowed formats are "+photoExtensions.join(",");
+showError(file_input, errorMsg);
+}
+
+}
+function removeFile(event) {
+alt("Photo removed from the PDF.");
+this.parentElement.remove();
+photos = photos.filter(function(photo) {
+return photo.image!==this.dataset.image;
+});
+if(photos.length===0){
+file_input.value="";
+}
+}
+function showError(element, error="Error") {
+if(element===null){
+return;
+alert(element);
+}
+const error_span = element.parentElement.querySelector("span");
+if(error_span===null){
+return;
+ alert(element);
+}
+element.classList.add("error");
+error_span.classList.add("error", "blink");
+
+error_span.innerText=error;
+return false;
+}
+function removeError() {
+const error_span = this.parentElement.querySelector("span");
+this.classList.remove("error");
+if(error_span===null){
+return;
+}
+error_span.classList.remove("error", "blink");
+error_span.innerText="";
+}
+function isAmty(value) {
+return value==="";
+}
+
+function isInLength(value, minLength, maxLength=100) {
+return value.length<minLength||value.length>maxLength;
+
+}
+const msg_box = document.getElementById("cpy");
+function alt(msg, delay=1000) {   
+
+sh("alt", "block");
+msg_box.innerHTML = msg;
+msg_box.focus();
+setTimeout(function() {
+sh("alt", "none");
+
+
+}, delay);
+}
+function sh(elem, state) {
+let element= typeof elem==="string"?document.getElementById(elem):elem;
+if(element===null){
+alert(elem);
+return;
+}
+element.style.display=state;
+}
+            function updateOnlineStatus() {
+
+
+sh("inter", "none");
+sh("page", "block");
+            }
+
+            function updateOfflineStatus() {
+sh("page", "none");
+sh("inter", "block");
+            }
+
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOfflineStatus); 
+
+
+    function checkConnection() {
+        if(navigator.onLine) {
+updateOnlineStatus();
+
+
+
+
+
+
+        } else {
+updateOfflineStatus();
+
+
+        }
+
+    }
+
+
+
+sh("ldm", "none");
+checkConnection();
+</script>
+</body>
+</html>
