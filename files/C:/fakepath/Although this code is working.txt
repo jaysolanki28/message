@@ -1,0 +1,84 @@
+Although this code is working properly, but the problem is that on clicking submit, the entire page becomes blank, and the message 'Please wait' is also not visible.  Although the email client is opening, the page becomes blank even before the email client opens.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Form</title>
+<style>
+    #status {
+        color: red;
+    }
+</style>
+</head>
+<body>
+
+<form autocomplete="off" target="secret-frame" class="forming" action="" method="post" name="Form" onsubmit="return submitForm(event);">
+
+    <label for="firstName">Student First Name:</label><br>
+    <input type="text" id="firstName" name="fName"><br><br>
+    <label for="lastName">Student Last Name:</label><br>
+    <input type="text" id="lastName" name="lName"><br><br>
+    <label for="email">Email I-D:</label><br>
+    <input type="email" id="email" name="email"><br><br>
+    <label for="message">Message:</label><br>
+    <textarea id="message" name="message"></textarea><br><br>
+    <input type="submit" value="Submit">
+</form>
+<iframe name="secret-frame" width="0" height="0" border="0" style="display: none;"></iframe>
+
+
+<p aria-live="assertive" id="status"></p>
+<script>
+    function validateForm() {
+        let flag = true;
+
+        if (document.Form.fName.value.length < 3) {
+            alertMessage("Please enter a valid Student First Name.");
+            return false;
+        }
+        if (document.Form.lName.value.length < 3) {
+            alertMessage("Please enter a valid Student Last Name.");
+            return false;
+        }
+        if (document.Form.email.value.length < 15) {
+            alertMessage("Please enter a valid email address.");
+            return false;
+        }
+        if (document.Form.message.value.length < 5) {
+            alertMessage("Please fill in your message.");
+            flag = false;
+        }
+        return flag;
+    }
+
+    function alertMessage(message) {
+        document.getElementById("status").style.display = "block";
+        document.getElementById("status").innerHTML = message;
+        
+        setTimeout(function() {
+            document.getElementById("status").style.display = "none";
+        }, 1000);
+    }
+
+    function submitForm(event) {
+        event.preventDefault();
+
+        if (validateForm()) {
+            document.getElementById('status').innerText = 'Please wait for one second';
+            setTimeout(() => {
+                const subject = 'Contact Form Submission';
+                const email = document.getElementById('email').value;
+                window.location.href = 'mailto:jaysolanki060192@gmail.com?subject=' + subject + '&body=' +
+                    'First Name: ' + document.getElementById('firstName').value + 
+'%0Last Name: ' + document.getElementById('lastName').value + 
+'%0AEmail: ' + email + 
+'%0AMessage: ' + document.getElementById('message').value;
+                
+                document.getElementById("status").style.display = "none";
+            }, 1000);
+        }
+    }
+</script>
+</body>
+</html>
